@@ -1,10 +1,15 @@
 __pycache__
+<<<<<<< HEAD
 *.egg-info
 
 
 .python-version
 .idea
 
+=======
+
+.python-version
+>>>>>>> 83758d6 (Day 1 **)
 
 input
 session.txt
