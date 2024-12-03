@@ -1,0 +1,11 @@
+__pycache__
+*.egg-info
+
+
+.python-version
+.idea
+
+
+input
+session.txt
+
