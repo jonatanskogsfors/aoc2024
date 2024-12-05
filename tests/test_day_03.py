@@ -3,8 +3,8 @@ import pytest
 from aoc2024 import day_03
 from tests import INPUT_DIR
 
-TEST_INPUT_1 = INPUT_DIR / "test_input_3_1.txt"
-TEST_INPUT_2 = INPUT_DIR / "test_input_3_2.txt"
+TEST_INPUT_1 = INPUT_DIR / "test_input_03_1.txt"
+TEST_INPUT_2 = INPUT_DIR / "test_input_03_2.txt"
 
 
 @pytest.mark.parametrize(

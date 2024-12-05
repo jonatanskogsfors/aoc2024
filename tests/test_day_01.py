@@ -3,7 +3,7 @@ import pytest
 from aoc2024 import day_01
 from tests import INPUT_DIR
 
-TEST_INPUT_1 = INPUT_DIR / "test_input_1_1.txt"
+TEST_INPUT_1 = INPUT_DIR / "test_input_01_1.txt"
 
 
 def test_parse_input_to_two_tuples():
