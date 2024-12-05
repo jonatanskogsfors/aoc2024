@@ -3,7 +3,10 @@ import sys
 from http import HTTPStatus
 from pathlib import Path
 
+import jinja2
 import requests
+
+import aoc2024
 
 COOKIE_PATH = Path("session.txt")
 INPUT_DIR = Path("input")
@@ -16,6 +19,10 @@ def main():
     match arguments.command:
         case "download":
             download_input(arguments.day)
+        case "run":
+            run_solution(arguments.day)
+        case "create":
+            create_day(arguments.day)
 
 
 def download_input(day: int):
@@ -36,6 +43,27 @@ def download_input(day: int):
         sys.exit(f"Failed to download input for day {day}:\n{response.text}")
 
 
+def run_solution(day: int):
+    if day_module := getattr(aoc2024, f"day_{day:02}"):
+        day_module.main()
+
+
+def create_day(day: int):
+    environment = jinja2.Environment(loader=jinja2.PackageLoader("aoc2024"))
+
+    day_path = aoc2024.ROOT_DIR / f"day_{day:02}.py"
+    if not day_path.exists():
+        template = environment.get_template("day.py")
+        new_day = template.render(day=day)
+        day_path.write_text(new_day)
+
+    test_path = aoc2024.TEST_DIR / f"test_day_{day:02}.py"
+    if not test_path.exists():
+        template = environment.get_template("test_day.py")
+        new_test = template.render(day=day)
+        test_path.write_text(new_test)
+
+
 def handle_arguments():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(title="Commands", dest="command")
@@ -43,6 +71,12 @@ def handle_arguments():
 
     download_parser = subparsers.add_parser("download", help="Download input.")
     download_parser.add_argument("day", type=int)
+
+    run_parser = subparsers.add_parser("run", help="Run solution for day")
+    run_parser.add_argument("day", type=int)
+
+    run_parser = subparsers.add_parser("create", help="Create template for day")
+    run_parser.add_argument("day", type=int)
 
     return parser.parse_args()
 
