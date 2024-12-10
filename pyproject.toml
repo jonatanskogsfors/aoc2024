@@ -20,10 +20,17 @@ dev = [
 [project.scripts]
 aoc2024 = "aoc2024.scripts.aoc:main"
 
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
 [tool.ruff]
 line-length = 90
-exclude = ["*/templates/*.py", "tests/*.py"]
+exclude = ["*/templates/*.py"]
 
 [tool.ruff.lint]
 select = ["PL", "E", "F", "W", "I", "RUF", "N"]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/test_*.py" = ["PLR0913"]
