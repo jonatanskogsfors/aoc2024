@@ -13,16 +13,33 @@ def find_region(plot, garden_map):
         if garden_map.get(candidate) == plant:
             region.add(candidate)
             neighbors = {
-                candidate + 1 + 0j,
-                candidate + -1 + 0j,
-                candidate + 0 + 1j,
-                candidate - 0 - 1j,
+                candidate + 1,
+                candidate - 1,
+                candidate + 1j,
+                candidate - 1j,
             }
             unvisited |= neighbors - region - visited
     return region
 
-
 def fence_price_for_region(region, bulk=False):
+    area = len(region)
+    if bulk:
+        fence = 0
+        for plot in region:
+            outside_neighbors = {plot - 1, plot + 1, plot - 1j, plot +1j} - region
+            if len(outside_neighbors) == 4:
+                fence += 4
+            elif len(outside_neighbors) == 3:
+                fence += 2
+            elif len(outside_neighbors) == 2 and ((a := outside_neighbors.pop()).real * (b := outside_neighbors.pop().real) + a.imag * b.imag) != 0:
+                fence += 1
+    else:
+        fence = sum(
+            len({plot - 1, plot + 1, plot - 1j, plot +1j} - region) for plot in region
+        )
+    return area * fence
+    
+def uggly_fence_price_for_region(region, bulk=False):
     area = len(region)
     left_fences = set()
     top_fences = set()
