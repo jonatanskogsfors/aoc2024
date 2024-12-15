@@ -1,5 +1,5 @@
 # Advent of Code 2024
-![Static Badge](https://img.shields.io/badge/AoC-28-009900?style=for-the-badge&logo=adventofcode&labelColor=black&link=https%3A%2F%2Fadventofcode.com%2F)
+![Static Badge](https://img.shields.io/badge/AoC-29-009900?style=for-the-badge&logo=adventofcode&labelColor=black&link=https%3A%2F%2Fadventofcode.com%2F)
 
 My solutions for Advent of Code 2024
 
