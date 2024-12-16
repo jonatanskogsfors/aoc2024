@@ -1,26 +1,39 @@
-import os
 import time
 from pathlib import Path
 
-RIGHT = 1+0j
-DOWN = 0+1j
-LEFT = -1+0j
-UP = 0-1j
+RIGHT = 1 + 0j
+DOWN = 0 + 1j
+LEFT = -1 + 0j
+UP = 0 - 1j
 
-DIRECTION = {
-    "^": UP,
-    ">": RIGHT,
-    "v": DOWN,
-    "<": LEFT
-}
+DIRECTION = {"^": UP, ">": RIGHT, "v": DOWN, "<": LEFT}
 
-def move_thing(thing: complex, direction: complex, boxes: set, walls: set, dimensions: complex, scaled_up=False):
+
+class Box:
+    def __init__(self, position, scaled_up=False):
+        self.position = position
+        self.scaled_up = scaled_up
+
+    @property
+    def positions(self):
+        p = [self.position]
+        if self.scaled_up:
+            p.append(self.position + 1)
+        return p
+
+
+def move_thing(
+    thing: complex,
+    direction: complex,
+    boxes: set,
+    walls: set,
+    dimensions: complex,
+    scaled_up=False,
+):
     new_thing = thing + direction
     inside_bounds = (
-            0 <= new_thing.real < dimensions.real
-            and 0 <= new_thing.imag < dimensions.imag
+        0 <= new_thing.real < dimensions.real and 0 <= new_thing.imag < dimensions.imag
     )
-
 
     blocked_by_walls = new_thing in walls
 
@@ -43,7 +56,7 @@ def move_thing(thing: complex, direction: complex, boxes: set, walls: set, dimen
 def parse_input(input_path: Path, scaled_up=False):
     raw_map, raw_moves = input_path.read_text().strip().split("\n\n")
     robot = None
-    boxes = set()
+    boxes = {}
     walls = set()
 
     x_scaler = 1 + scaled_up
@@ -54,16 +67,15 @@ def parse_input(input_path: Path, scaled_up=False):
                 case "@":
                     robot = complex(x * x_scaler, y)
                 case "O":
-                    if scaled_up:
-                        boxes.add((complex(x * x_scaler, y), complex((x * x_scaler) + 1, y)))
-                    else:
-                        boxes.add(complex(x * x_scaler, y))
+                    box = Box(complex(x, y), scaled_up=scaled_up)
+                    for position in box.positions:
+                        boxes[position] = box
                 case "#":
                     walls.add(complex(x * x_scaler, y))
                     if scaled_up:
                         walls.add(complex((x * x_scaler) + 1, y))
 
-    dimensions = complex((x+1) * x_scaler, y+1)
+    dimensions = complex((x + 1) * x_scaler, y + 1)
 
     moves = tuple(DIRECTION[move] for move in raw_moves.replace("\n", ""))
     return robot, boxes, walls, dimensions, moves
@@ -75,11 +87,13 @@ def solve_part_one(input_path: Path):
         robot, boxes = move_thing(robot, move, boxes, walls, dimensions)
     return sum(int(box.imag * 100 + box.real) for box in boxes)
 
+
 def solve_part_two(input_path: Path):
     robot, boxes, walls, dimensions, moves = parse_input(input_path, scaled_up=True)
     for move in moves:
         robot, boxes = move_thing(robot, move, boxes, walls, dimensions, scaled_up=True)
     return sum(int(box.imag * 100 + box.real) for box in boxes)
+
 
 def main():
     t0 = time.perf_counter()
